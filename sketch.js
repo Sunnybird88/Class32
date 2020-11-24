@@ -3,7 +3,8 @@ const World= Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var engine, world;
+
+var score = 0;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
@@ -11,13 +12,14 @@ var bird, slingshot;
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getTime();
 }
 
 function setup(){
     var canvas = createCanvas(1200,400);
     engine = Engine.create();
     world = engine.world;
+
 
 
     ground = new Ground(600,height,1200,20);
@@ -44,19 +46,27 @@ function setup(){
     slingshot = new SlingShot(bird.body,{x:200, y:50});
 }
 
-function draw(){
+function draw() {
+    if(backgroundImg)
     background(backgroundImg);
     Engine.update(engine);
+
+    fill("white");
+    textSize(30);
+    text("Score: " + score, 1000, 70);
+
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score()
     log3.display();
 
     box5.display();
@@ -85,4 +95,28 @@ function keyPressed(){
     if(keyCode === 32){
        // slingshot.attach(bird.body);
     }
+}
+
+async function getTime() {
+
+
+    var getInfo = await fetch("http://worldtimeapi.org/api/timezone/America/New_York")
+    var getInfoType = await getInfo.json();
+    console.log(getInfoType);
+
+    var dt = getInfoType.datetime
+    console.log(dt);
+
+    var time = dt.slice(11, 13);
+    console.log(time);
+
+    if (time >= 6 && time <= 17) {
+
+        bg = ("sprites/bg.png");
+    }
+    else {
+
+        bg = ("sprites/bg2.jpg");
+    }
+    backgroundImg = loadImage(bg)
 }
